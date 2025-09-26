@@ -1,8 +1,6 @@
+using Blobmaster2.CommandLib;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Blobmaster2.CommandLib;
-using UnityEngine.EventSystems;
 
 public class CommandManager : MonoBehaviour
 {
