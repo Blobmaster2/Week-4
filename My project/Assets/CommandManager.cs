@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Blobmaster2.CommandLib;
+using UnityEngine.EventSystems;
 
 public class CommandManager : MonoBehaviour
 {
     public static CommandManager Instance;
-    private Stack<ICommand> undoStack;
+    private Stack<ICommand> undoStack = new();
 
     private void Awake()
     {
@@ -24,12 +26,24 @@ public class CommandManager : MonoBehaviour
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
+            if (hit.collider == null)
+            {
+                return;
+            }
+
             if (hit.collider.gameObject.tag == "Square")
             {
                 Color randomColour = new Color(Random.value, Random.value, Random.value);
 
-                new ChangeColour(hit.collider.gameObject, randomColour);
+                var command = new ChangeColour(hit.collider.gameObject, randomColour);
+
+                AddCommand(command);
             }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            UndoCommand();
         }
     }
 
@@ -49,11 +63,4 @@ public class CommandManager : MonoBehaviour
 
         undoStack.Pop().Undo();
     }
-}
-
-public interface ICommand
-{
-    void Execute();
-
-    void Undo();
 }
